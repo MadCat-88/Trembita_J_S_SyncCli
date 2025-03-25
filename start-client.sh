@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar ./target/SpringClientDemo-1.0-SNAPSHOT.jar
+java -jar ./target/SpringClientSoap-1.0-SNAPSHOT.jar

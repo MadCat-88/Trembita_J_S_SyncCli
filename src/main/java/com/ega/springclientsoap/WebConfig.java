@@ -9,8 +9,6 @@ import jakarta.xml.soap.SOAPElement;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPHeader;
 import jakarta.xml.soap.SOAPMessage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.WebServiceMessageFactory;
@@ -34,9 +32,6 @@ public class WebConfig {
     try {
             SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory(MessageFactory.newInstance());
             this.message = messageFactory.getMessageFactory().createMessage();
-            //SOAPHeader header = this.message.getSOAPHeader();
-            //SOAPElement element = header.addChildElement("name", "string");
-            //this.message.saveChanges();
             messageFactory.afterPropertiesSet();
             WebServiceTemplate webServiceTemplate = new WebServiceTemplate(messageFactory);
             Jaxb2Marshaller marshaller = new Jaxb2Marshaller();

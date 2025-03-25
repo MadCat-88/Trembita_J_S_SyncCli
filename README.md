@@ -1,4 +1,4 @@
-# Проект REST Client на Spring Framework з підтримкою системи Трембіта
+# Проект SOAP Client на Spring Framework з підтримкою системи Трембіта
 
 ## Опис
 Цей проєкт входить в набір прикладів взаємодії з API шлюзу безпечного обміну системи Трембіта (ШБО), що демонструють технічні особливості розробки вебсервісів та вебклієнтів, сумісних з системою Трембіта.
@@ -17,7 +17,7 @@
 
 ## Встановлення
 
-### Встановлення за допомогою скрипта install_SpringClient.sh
+### Встановлення за допомогою скрипта install_SoapClient.sh
 
 Було створено скрипт `install_SpringClient.sh` для автоматизації процесу встановлення середовища розробки, готового до компіляції прикладу. Скрипт виконує наступні кроки:
 1. Встановлює системні залежності.
@@ -25,30 +25,30 @@
 3. Встановлює або оновлює Java 21.
 4. Встановлює та налаштовує проєкт
 
-#### Використання скрипта install_SpringClient.sh
+#### Використання скрипта install_SoapClient.sh
 
 На вашій робочій станції для розробки виконайте наступні кроки:
 1. Завантажте скрипт автоматизациї встановлення `install_SpringClient.sh` в папку Documents:
    ```bash
-   wget https://raw.githubusercontent.com/Wishmaster-sa/SpringClientDemo/master/install_SpringClient.sh
+   wget https://raw.githubusercontent.com/Wishmaster-sa/SpringClientSoap/master/install_SoapClient.sh
    ```
 
 2. Зробіть файл виконуваним:
 
    ```bash
-   sudo chmod +x install_SpringClient.sh
+   sudo chmod +x install_SoapClient.sh
    ```
 
 3. Запустіть скрипт:
 
    ```bash
-   sudo bash ./install_SpringClient.sh
+   sudo bash ./install_SoapClient.sh
    ```
 4. В деяких випадках скрипт може пропонувати перезавантажити деякі системні служби - просто натисніть Enter.
 
-5. Відкрити файл конфігурації `./SpringClientDemo/config/config.properties`
+5. Відкрити файл конфігурації `./SpringClientSoap/config/config.properties`
    ```bash
-   nano ./SpringClientDemo/config/config.properties
+   nano ./SpringClientSoap/config/config.properties
    ```
 та встановити коректні параметри підключення до сервіса 
 
@@ -106,14 +106,14 @@ sudo apt install git
 #### Клонування репозиторію
 
    ```bash
-   git clone https://github.com/Wishmaster-sa/SpringClientDemo.git
+   git clone https://github.com/Wishmaster-sa/SpringClientSoap.git
    ```
 
 #### Налаштування підключення до БД в проєкті
 
-Відкрити файл конфігурації застосунку Spring `./SpringClientDemo/config/config.properties`
+Відкрити файл конфігурації застосунку Spring `./SpringClientSoap/config/config.properties`
    ```bash
-   nano ./SpringClientDemo/config/config.properties
+   nano ./SpringClientSoap/config/config.properties
    ```
 та встановити коректні параметри підключення до сервіса 
 
@@ -151,7 +151,7 @@ webclient.settings.headers={'UXP-CLIENT': 'test1/GOV/00000088/TEST_SUB888', 'UXP
 #### Переходимо до каталогу з проєктом
 
    ```bash
-   cd SpringClientDemo
+   cd SpringClientSoap
    ```
 
 ### Компілюємо вихідний файл
@@ -159,7 +159,7 @@ webclient.settings.headers={'UXP-CLIENT': 'test1/GOV/00000088/TEST_SUB888', 'UXP
 /usr/bin/mvn package
 ```
 
-### Запуск клієнта (ви повинні знаходитись в каталозі з сервісом SpringClientDemo)
+### Запуск клієнта (ви повинні знаходитись в каталозі з сервісом SpringClientSoap)
 
 ```bash
 bash start-client.sh
@@ -180,7 +180,7 @@ http://localhost:8050/
 
 ### Використання скрипта springwc-service.sh
 1. Скомпілюйте через середовище розробки та скопіюйте jar-файл веб-сервісу до цільової системи.
-   Ви повинні отримати в папці SpringClientDemo/target/SpringClientDemo-0.0.1-SNAPSHOT.jar скомпільований jar-файл 
+   Ви повинні отримати в папці SpringClientSoap/target/SpringClientSoap-0.0.1-SNAPSHOT.jar скомпільований jar-файл 
 
 2. Зробіть скріпт виконуваним:
 
@@ -188,7 +188,7 @@ http://localhost:8050/
    chmod +x springwc-service.sh
    ```
 
-3. Запустіть скрипт з каталогу SpringClientDemo:
+3. Запустіть скрипт з каталогу SpringClientSoap:
 
    ```bash
    sudo bash springwc-service.sh install

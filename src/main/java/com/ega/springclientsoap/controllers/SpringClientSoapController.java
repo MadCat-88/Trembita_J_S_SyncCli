@@ -4,7 +4,6 @@
  */
 package com.ega.springclientsoap.controllers;
 
-import com.ega.springclientsoap.WebConfig;
 import com.ega.springclientsoap.interfaces.SpringClientSoapInterface;
 import com.ega.springclientsoap.models.Answer;
 import com.ega.springclientsoap.models.AppSettings;

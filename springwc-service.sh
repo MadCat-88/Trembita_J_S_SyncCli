@@ -7,13 +7,13 @@ function installService() {
 	autostartFile="./springwc.service"
  	currentuser=$(stat -c "%G" .)
 	sed -i "s/User=sa/User=$currentuser/g" $autostartFile
-	sudo mkdir /opt/SpringWClient
-	sudo mkdir /opt/SpringWClient/config
-	sudo mkdir /opt/SpringWClient/certs
-	sudo cp ./target/SpringClientDemo-1.0-SNAPSHOT.jar /opt/SpringWClient
-        sudo cp -R config/* /opt/SpringWClient/config 
-        sudo cp -R certs/* /opt/SpringWClient/certs 
-	#sudo cp ./webservice.settings /opt/SpringWClient
+	sudo mkdir /opt/SpringClientSoap
+	sudo mkdir /opt/SpringClientSoap/config
+	sudo mkdir /opt/SpringClientSoap/certs
+	sudo cp ./target/SpringClientSoap-1.0-SNAPSHOT.jar /opt/SpringClientSoap
+        sudo cp -R config/* /opt/SpringClientSoap/config 
+        sudo cp -R certs/* /opt/SpringClientSoap/certs 
+	#sudo cp ./webservice.settings /opt/SpringClientSoap
 	sudo cp ./springwc.service /etc/systemd/system
 	sudo systemctl daemon-reload
 	sudo systemctl enable springwc.service
@@ -22,23 +22,23 @@ function installService() {
 }
 
 function removeService() {
-	echo "Видаляю SpringWClient сервіс..."
+	echo "Видаляю SpringClientSoap сервіс..."
 	sudo systemctl stop springwc.service
 	sudo systemctl disable springwc.service
 	sudo rm /etc/systemd/system/springwc.service
 	sudo sudo systemctl daemon-reload
 	
-	sudo rm -R /opt/SpringWClient
+	sudo rm -R /opt/SpringClientSoap
 }
 
 function startService() {
-	echo "Запускаю SpringWClient сервіс..."
+	echo "Запускаю SpringClientSoap сервіс..."
 	sudo systemctl start springwc.service
 	sudo systemctl status springwc.service
 }
 
 function stopService() {
-	echo "Припиняю SpringWClient сервіс..."
+	echo "Припиняю SpringClientSoap сервіс..."
 	sudo systemctl stop springwc.service
 	sudo systemctl status springwc.service
 }

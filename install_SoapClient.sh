@@ -44,20 +44,25 @@ echo "**************************************************************************
 
 sudo apt install curl -y
 
-echo "******************************************************************************
-*                  завантаження Apache NetBeans 19
-******************************************************************************"
-if [ -f ./$netbeans19 ]; then
-	echo "середовище вже завантажено"
-else 
-	curl https://archive.apache.org/dist/netbeans/netbeans-installers/19/$netbeans19 --output $netbeans19
-fi
+#echo "******************************************************************************
+#*                  завантаження Apache NetBeans 19
+#******************************************************************************"
+#if [ -f ./$netbeans19 ]; then
+#	echo "середовище вже завантажено"
+#else 
+#	curl https://archive.apache.org/dist/netbeans/netbeans-installers/19/$netbeans19 --output $netbeans19
+#fi
+#
+#echo "******************************************************************************
+#*                  встановлення Apache NetBeans 19
+#******************************************************************************"
+
+#sudo dpkg -i $netbeans19
 
 echo "******************************************************************************
-*                  встановлення Apache NetBeans 19
+*                  встановлення Maven
 ******************************************************************************"
-
-sudo dpkg -i $netbeans19
+sudo apt install maven 
 
 echo "******************************************************************************
 *                  встановлення Github client
@@ -66,27 +71,28 @@ echo "**************************************************************************
 sudo apt install git -y
 
 echo "******************************************************************************
-*                  Клонування Spring Web-Client із Github
+*                  Клонування Spring SOAP-Client із Github
 ******************************************************************************"
 currentuser=$(stat -c "%G" .)
 
-if [ -e ./SpringClientDemo ]; then
-	echo "проєкт SpringWClient вже існує, клонування пропущено"
+if [ -e ./SpringClientSoap ]; then
+	echo "проєкт SpringClientSoap вже існує, клонування пропущено"
 else 
-	git clone https://github.com/Wishmaster-sa/SpringClientDemo.git
+	git clone https://github.com/Wishmaster-sa/SpringClientSoap.git
 
-	sudo chown -R $currentuser:$currentuser ./SpringClientDemo
+	sudo chown -R $currentuser:$currentuser ./SpringClientSoap
 fi
 
 
-autostartFile="./SpringClientDemo/springwc.service" 
+autostartFile="./SpringClientSoap/springwc.service" 
 sed -i "s/User=sa/User=$currentuser/g" $autostartFile
 
-sudo chown -R $currentuser:$currentuser ./SpringClientDemo
+sudo chown -R $currentuser:$currentuser ./SpringClientSoap
 
-cd ./SpringClientDemo
+cd ./SpringClientSoap
 
-/usr/lib/apache-netbeans/java/maven/bin/mvn package
+#/usr/lib/apache-netbeans/java/maven/bin/mvn package
+/usr/bin/mvn package
 
 sudo chmod +x ./start-client.sh
 
@@ -96,7 +102,7 @@ echo "**************************************************************************
 ******************************************************************************"
 
 echo "**************************************************************************************
-    * Щоб запустити клієнт перейдить в папку проекта (SpringClientDemo) 
+    * Щоб запустити клієнт перейдить в папку проекта (SpringClientSoap) 
     * Отредагуйте конфіг файл за допомогою nano ./config/config.properties
     * Вам треба вказати адрес сервіса (server-path)
     * порт клієнта (port)
@@ -111,7 +117,7 @@ echo "**************************************************************************
     * 
     * Зберегите файл налаштувань та виконайте наступну команду:  bash start-client.sh
     * Кліент буде доступний за адресою http[s]://localhost:[port]
-    * також у вас повинен бути вже розгорнутий та налаштований SpringWSrest сервіс до якого цей
+    * також у вас повинен бути вже розгорнутий та налаштований Spring Soap Web сервіс до якого цей
     * клієнт буде звертатись.
     ****************************************************************************************"
      
