@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Scanner;
 import org.json.JSONObject;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,14 +62,14 @@ public class SpringClientSoapController {
             System.out.println("Certs page!");
             
             return service.listCerts();
-            //return render_template("list_certs.html");
 	}
 
         @GetMapping("/files")
         //перехід до сторинкі створення персони
 	public String viewFiles() throws FileNotFoundException{
-            System.out.println("Files page!");
-            return render_template("list_files.html");
+            System.out.println("ASIC's containers page!");
+            //return render_template("list_files.html");
+            return service.listAsic();
 	}
         
         @PostMapping("/create")
@@ -143,15 +144,26 @@ public class SpringClientSoapController {
 	}
         
         
-        //завантаження сертіфікатів
-        @GetMapping("/download_cert/{filename}")
-	public ResponseEntity<InputStreamResource> downloadCert(@PathVariable String filename) throws IOException{
+        //завантаження файлів
+        @GetMapping("/download/{page}/{filename}")
+	public ResponseEntity<InputStreamResource> downloadFile(@PathVariable String page, @PathVariable String filename) throws IOException{
             String path = "";
-            if(AppSettings.CERTS_PATH.startsWith(".")){
-                path = new File(".").getCanonicalPath()+"/"+AppSettings.CERTS_PATH.substring(2)+"/"+filename;
-            }else{
-                path = new File(".").getCanonicalPath()+"/"+AppSettings.CERTS_PATH+"/"+filename;
+            
+            
+            if("cert".equals(page)){
+                if(AppSettings.CERTS_PATH.startsWith(".")){
+                    path = new File(".").getCanonicalPath()+"/"+AppSettings.CERTS_PATH.substring(2)+"/"+filename;
+                }else{
+                    path = new File(".").getCanonicalPath()+"/"+AppSettings.CERTS_PATH+"/"+filename;
+                }
+            }else if("asic".equals(page)){
+                if(AppSettings.ASIC_PATH.startsWith(".")){
+                    path = new File(".").getCanonicalPath()+"/"+AppSettings.ASIC_PATH.substring(2)+"/"+filename;
+                }else{
+                    path = new File(".").getCanonicalPath()+"/"+AppSettings.ASIC_PATH+"/"+filename;
+                }
             }
+
             System.out.println("Download file: "+path);
             File ff = new File(path);
             
@@ -161,12 +173,14 @@ public class SpringClientSoapController {
             return ResponseEntity
                 .ok()
                 .contentLength(len)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + ff.getName() + "\"")
                 .contentType(
                         MediaType.parseMediaType("application/octet-stream"))
                 .body(new InputStreamResource(bin1));
 
         }
 
+        
     public String render_template(String templateName)
         throws FileNotFoundException
     {

@@ -25,6 +25,7 @@ public interface SpringClientSoapInterface {
    public Answer savePersona(Persona persona);
    public Answer deletePersona(String rnokpp);
    public String listCerts();
+   public String listAsic();
    public String downloadFile(String path);
     
 }

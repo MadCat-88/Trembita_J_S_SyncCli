@@ -5,10 +5,14 @@
 package com.ega.springclientsoap;
 
 import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.Name;
 import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPEnvelope;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPHeader;
+import jakarta.xml.soap.SOAPHeaderElement;
 import jakarta.xml.soap.SOAPMessage;
+import jakarta.xml.soap.SOAPPart;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.WebServiceMessageFactory;
@@ -22,7 +26,7 @@ import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 @Configuration
 public class WebConfig {
     public WebServiceTemplate web;
-    public SOAPMessage message;
+    //public SOAPMessage message;
     
     public WebConfig(){
         this.web = InitWebService();
@@ -31,7 +35,27 @@ public class WebConfig {
     private WebServiceTemplate InitWebService(){
     try {
             SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory(MessageFactory.newInstance());
+/*
             this.message = messageFactory.getMessageFactory().createMessage();
+        //    SOAPMessage soapMessage = saajSoapMessage.getSaajMessage();
+            
+            SOAPPart soapPart = this.message.getSOAPPart();
+            SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
+            SOAPHeader soapHeader = soapEnvelope.getHeader();
+            Name headerElementName = soapEnvelope.createName(
+                    "Security",
+                    "wsse",
+                    "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+            );
+            SOAPHeaderElement soapHeaderElement = soapHeader.addHeaderElement(headerElementName);
+            SOAPElement usernameTokenSOAPElement = soapHeaderElement.addChildElement("UsernameToken", "wsse");
+            SOAPElement userNameSOAPElement = usernameTokenSOAPElement.addChildElement("Username", "wsse");
+            userNameSOAPElement.addTextNode("username");
+            SOAPElement passwordSOAPElement = usernameTokenSOAPElement.addChildElement("Password", "wsse");
+            passwordSOAPElement.addTextNode("password");
+            this.message.saveChanges();
+*/
+            
             messageFactory.afterPropertiesSet();
             WebServiceTemplate webServiceTemplate = new WebServiceTemplate(messageFactory);
             Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -49,7 +73,7 @@ public class WebConfig {
         }
         
     }
-    
+/*    
     public void SetHeader(String key, String value){
         
         WebServiceMessageFactory messageFactory = this.web.getMessageFactory();
@@ -62,4 +86,5 @@ public class WebConfig {
         }
         
     }
+*/
 }
