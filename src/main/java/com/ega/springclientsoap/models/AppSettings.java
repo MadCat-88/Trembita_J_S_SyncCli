@@ -54,21 +54,14 @@ public class AppSettings implements InitializingBean{
 
     @Value("#{${webclient.settings.headers:{key:'1'}}}")
     private Map<String,String> headers;
-    
+
     public static String SERVER_PATH;
-    
     public static String LOG_FILENAME;
-    
     public static String LOG_LEVEL;
-
     public static String CERTS_PATH;
-
     public static String ASIC_PATH;
-
     public static boolean USE_SSL;
-    
     public static String TRUSTSTORE_PATH;
-
     public static String TRUSTSTORE_PASSWORD;
 
     public static Map<String,String> SERVICE_HEADERS;
@@ -90,7 +83,8 @@ public class AppSettings implements InitializingBean{
         AppSettings.SERVICE_HEADERS = service_headers;
         AppSettings.CLIENT_HEADERS = client_headers;
         
-        System.out.println("afterPropertiesSet: ExampleBean is initialized = "+SERVER_PATH);
+        
+        System.out.println("afterPropertiesSet: Bean is initialized = "+SERVER_PATH);
 
     }
     
