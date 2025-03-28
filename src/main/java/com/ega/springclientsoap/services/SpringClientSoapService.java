@@ -23,14 +23,9 @@ import io.spring.guides.gs_producing_web_service.GetPersonaListByUnzrRequest;
 import io.spring.guides.gs_producing_web_service.GetPersonaListRequest;
 import io.spring.guides.gs_producing_web_service.GetPersonaListResponse;
 import io.spring.guides.gs_producing_web_service.GetPersonaRequest;
-import io.spring.guides.gs_producing_web_service.ObjectFactory;
 import io.spring.guides.gs_producing_web_service.PersonaXml;
 import io.spring.guides.gs_producing_web_service.UpdatePersonaRequest;
 import io.spring.guides.gs_producing_web_service.UpdatePersonaResponse;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.soap.Name;
 import jakarta.xml.soap.SOAPElement;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPHeader;
@@ -57,8 +52,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.json.JSONArray;
@@ -69,23 +62,12 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.client.core.WebServiceMessageCallback;
-import org.springframework.ws.soap.SoapEnvelope;
-import org.springframework.ws.soap.SoapHeader;
-import org.springframework.ws.soap.SoapHeaderElement;
-import org.springframework.ws.soap.SoapHeaderException;
-import org.springframework.ws.soap.SoapMessage;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
-import org.springframework.xml.namespace.QNameUtils;
-import org.springframework.xml.transform.StringSource;
 import reactor.core.publisher.Flux;
 
 
@@ -137,7 +119,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
             }
             );
         */
-          GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive((GetPersonaListRequest) request);
+          GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive((GetPersonaListRequest) request, "GetPersonaList");
 
 /*
         GetPersonaListResponse response = (GetPersonaListResponse) webServiceTemplate.web.marshalSendAndReceive(AppSettings.SERVER_PATH,request, new WebServiceMessageCallback() {
@@ -160,7 +142,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         
     }
     
-    public Object SendAndReceive(Object request){
+    public Object SendAndReceive(Object request,String method){
         WebConfig webServiceTemplate = new WebConfig();
         
         String uuid =UUID.randomUUID().toString();
@@ -220,6 +202,9 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
                         SOAPElement serviceHeader = service.addChildElement(key, "iden");
                         serviceHeader.setTextContent(value);
                     }
+                    //add serviceCode medthod
+                    SOAPElement serviceHeader = service.addChildElement("serviceCode", "iden");
+                    serviceHeader.setTextContent(method);
 
                     for (String key : AppSettings.HEADERS.keySet()) {
                         String value = AppSettings.HEADERS.get(key);
@@ -254,7 +239,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
 
 
         //request.
-        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request);
+        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request, "GetPersona");
         
         String html = getHtml(response);
         
@@ -269,7 +254,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         request.setFirstName(firstName);
         
         //request.
-        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request);
+        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request, "GetPersonaListByFirstName");
         
         String html = getHtml(response);
         
@@ -282,7 +267,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         request.setLastName(lastName);
         
         //request.
-        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request);
+        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request,"GetPersonaListByLastName");
         
         String html = getHtml(response);
         
@@ -295,7 +280,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         request.setBirthDate(birthDateStr);
         
         //request.
-        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request);
+        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request, "GetPersonaListByBirthDate");
         
         String html = getHtml(response);
         
@@ -308,7 +293,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         request.setPasport(pasport);
         
         //request.
-        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request);
+        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request,"GetPersonaListByPasport");
         
         String html = getHtml(response);
         
@@ -321,7 +306,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         request.setUnzr(unzr);
         
         //request.
-        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request);
+        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive(request, "GetPersonaListByUnzr");
         
         String html = getHtml(response);
         
@@ -352,7 +337,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
             request.setPatronymic(persona.getPatronymic());
 
             //request.
-            AddPersonaResponse response = (AddPersonaResponse) SendAndReceive(request);
+            AddPersonaResponse response = (AddPersonaResponse) SendAndReceive(request,"AddPersona");
             AnswerXml ansxml = response.getAnswerXml();
             ans.setStatus(ansxml.isStatus());
             ans.setDescr(ansxml.getDescr());
@@ -367,7 +352,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
             request.setPasport(persona.getPasport());
             request.setUnzr(persona.getUnzr());
             request.setPatronymic(persona.getPatronymic());
-            UpdatePersonaResponse response = (UpdatePersonaResponse) SendAndReceive(request);
+            UpdatePersonaResponse response = (UpdatePersonaResponse) SendAndReceive(request, "UpdatePersona");
     
             AnswerXml ansxml = response.getAnswerXml();
             ans.setStatus(ansxml.isStatus());
@@ -385,7 +370,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         DeletePersonaRequest request = new DeletePersonaRequest();
         request.setRnokpp(rnokpp);
         //request.
-        DeletePersonaResponse response = (DeletePersonaResponse) SendAndReceive(request);
+        DeletePersonaResponse response = (DeletePersonaResponse) SendAndReceive(request,"DeletePersona");
         AnswerXml ansxml = response.getAnswerXml();
         ans.setStatus(ansxml.isStatus());
         ans.setDescr(ansxml.getDescr());
