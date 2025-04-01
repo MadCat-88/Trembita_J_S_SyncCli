@@ -92,8 +92,9 @@ import org.springframework.ws.soap.saaj.SaajSoapMessage;
  */
 @Service
 public class SpringClientSoapService implements SpringClientSoapInterface{
-    // Constructor-based dependency injection for WebClient
-
+    private boolean isError = false;
+    private String errorDescription = "";
+    
     
     @Override
     public String showAll() {
@@ -101,7 +102,7 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
 
         WebConfig webServiceTemplate = new WebConfig();
 
-          GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive((GetPersonaListRequest) request, "getPersonaList");
+        GetPersonaListResponse response = (GetPersonaListResponse) SendAndReceive((GetPersonaListRequest) request, "getPersonaList");
 
         String html = getHtml(response);
         
@@ -112,15 +113,21 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
     
     public Object SendAndReceive(Object request,String method){
         WebConfig webServiceTemplate = new WebConfig();
+        Object response;
+        this.isError = false;
+        this.errorDescription = "";
+        String errorDescription ="";
         
         String uuid =UUID.randomUUID().toString();
         
-        Object response = webServiceTemplate.web.marshalSendAndReceive(AppSettings.SERVER_PATH,request, new WebServiceMessageCallback() {
-            @Override
-            public void doWithMessage(WebServiceMessage message) {
-                try
-                {
-/*          Додаємо заголовки для Трембіта 1.х 
+        try{
+            
+            response = webServiceTemplate.web.marshalSendAndReceive(AppSettings.SERVER_PATH,request, new WebServiceMessageCallback() {
+                @Override
+                public void doWithMessage(WebServiceMessage message) {
+                    try
+                    {
+    /*          Додаємо заголовки для Трембіта 1.х 
             Заголовки повинни виглядяти наступним чином     
                                         
                     <soapenv:Header>
@@ -187,11 +194,18 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
                     
                 } catch (SOAPException ex) {
                     System.out.println("Error: "+ex.getMessage());
+                    
                 }
 
             }
         
         });
+        }catch (Exception ex){
+            System.out.println("Error: "+ex.getMessage());
+            this.errorDescription = ex.getMessage();
+            this.isError = true;
+            response = null;
+        }
         
         
         //логуемо УІД щоб потім можно було отримати ASIC-контейнер
@@ -379,6 +393,10 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
 
         String body = "";
         
+        if(response==null){
+            return transformToTable(jsArray,html,param);     //модіфікуємо сторінку list_person.html
+        }
+        
         for (PersonaXml persona : response.getPersonaXml()) {
             JSONObject jspersona = new JSONObject();
                 
@@ -406,7 +424,6 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
                 jsArray.put(jspersona);
             }
         
-    //    System.out.println("Found: "+body);
         
         String result = transformToTable(jsArray,html,param);     //модіфікуємо сторінку list_person.html
         
@@ -461,11 +478,30 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         result = result.replaceAll("<!--@PersonsTable-->", replaceString);
         result = result.replaceAll("history.back()", "history.back(0)");
         result = result.replaceAll("@dataToJson", res);
-    
+        
+        if(this.isError){
+            result = result.replaceAll("<!--ONERROR-->", GetErrorBlock(this.errorDescription));
+        }
+        
         
         return result;
     }
 
+     private String GetErrorBlock(String errorMessage){
+        String error = "    <div class=\"container mt-5\">\n" +
+            "        <!--<h1 class=\"mb-4\">Помилка</h1>  <!-- Заголовок для сторінки з помилкою -->\n" +
+            "        <div class=\"alert alert-danger\" role=\"alert\" >  <!-- Відображаємо повідомлення про помилку у вигляді червоного блоку -->\n" +
+            "            <h4 class=\"alert-heading\">Сталась помилка!</h4>  <!-- Заголовок повідомлення про помилку -->\n" +
+            "            <p>"+errorMessage+"</p>  <!-- Виводимо повідомлення про помилку з переданого змінного error_message -->\n" +
+            "            <hr>\n" +
+            "    <!--        <button class=\"btn btn-primary\" onclick=\"history.back()\">Назад</button>  <!-- Кнопка для повернення на попередню сторінку -->\n" +
+            "        </div>\n" +
+            "    </div>\n";
+
+        return error;
+    }
+   
+    
     public String render_template(String templateName){
  
         // the stream holding the file content
@@ -481,8 +517,6 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         }
         
     }
-    
-    
     
         //запис лога
     private void writeLog(HashMap logrecord){
@@ -515,19 +549,15 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
     @Override
     public String listCerts() {
         String html;
-        
+
         html = render_template_files(AppSettings.CERTS_PATH, "list_certs.html");
+        
     
         return html;
     }
     
     private String render_template_files(String path, String filename){
         
-        List<File> files = Stream.of(new File(path).listFiles())
-            .filter(file -> !file.isDirectory())
-            //.map(File::getName)
-            .collect(Collectors.toList());
-
         String page;
         if(path.equalsIgnoreCase(AppSettings.ASIC_PATH)){
             page = "asic";
@@ -535,39 +565,41 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
             page = "cert";
         }
         
-        
         String replaceString = "";
         String html;
-        //LocalDateTime fileLastModified;
-        
-        for(int i=0;i<files.size();i++){
 
-            Long timestamp = files.get(i).lastModified();
-            String fileLastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), 
-                                TimeZone.getDefault().toZoneId()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));    
-            
-            //службовий файл пропускаємо
-            if(files.get(i).getName().equalsIgnoreCase("asic.log")){
-                continue;
-            }            
-            
-            replaceString +=  "<tr>\n"
-            +"    <td> "+files.get(i).getName() +"</td>  <!-- Відображаємо ім'я файлу -->\n"
-            +"    <td> "+fileLastModified +"</td>  <!-- Відображаємо дату і час створення файлу -->\n"
-            +"    <td>\n"
-            +"        <a href=\"/download/"+page+"/"+files.get(i).getName()+"\" class=\"btn btn-primary\">Скачати</a>  <!-- Посилання для завантаження файлу -->\n"
-            +"    </td>\n"
-            +"    </tr>\n";
-            
+        if(new File(path).exists()){
+            List<File> files = Stream.of(new File(path).listFiles())
+                .filter(file -> !file.isDirectory())
+                //.map(File::getName)
+                .collect(Collectors.toList());
+
+
+            for(int i=0;i<files.size();i++){
+
+                Long timestamp = files.get(i).lastModified();
+                String fileLastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), 
+                                    TimeZone.getDefault().toZoneId()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));    
+
+                //службовий файл пропускаємо
+                if(files.get(i).getName().equalsIgnoreCase("asic.log")){
+                    continue;
+                }            
+
+                replaceString +=  "<tr>\n"
+                +"    <td> "+files.get(i).getName() +"</td>  <!-- Відображаємо ім'я файлу -->\n"
+                +"    <td> "+fileLastModified +"</td>  <!-- Відображаємо дату і час створення файлу -->\n"
+                +"    <td>\n"
+                +"        <a href=\"/download/"+page+"/"+files.get(i).getName()+"\" class=\"btn btn-primary\">Скачати</a>  <!-- Посилання для завантаження файлу -->\n"
+                +"    </td>\n"
+                +"    </tr>\n";
+
+            }
         }
-
-            //html = render_template("list_certs.html");
+        
             html = render_template(filename);
             html = html.replaceAll("<!--@DataTable -->",replaceString);
 
-            
-
-        
         return html;
     }
 
