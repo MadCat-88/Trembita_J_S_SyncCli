@@ -13,6 +13,8 @@ import com.ega.springclientsoap.models.Persona;
 import io.spring.guides.gs_producing_web_service.AddPersonaRequest;
 import io.spring.guides.gs_producing_web_service.AddPersonaResponse;
 import io.spring.guides.gs_producing_web_service.AnswerXml;
+import io.spring.guides.gs_producing_web_service.CheckPersonaRequest;
+import io.spring.guides.gs_producing_web_service.CheckPersonaResponse;
 import io.spring.guides.gs_producing_web_service.DeletePersonaRequest;
 import io.spring.guides.gs_producing_web_service.DeletePersonaResponse;
 import io.spring.guides.gs_producing_web_service.GetPersonaListByBirthDateRequest;
@@ -364,15 +366,17 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
     
     @Override
     public Answer checkPersona(String rnokpp) {
-        /*
-        WebClient webClient = new WebConfig().getWebClient();
-
-        return  webClient.get()
-                .uri("/check/"+rnokpp)
-                .retrieve()
-                .bodyToMono(Answer.class);
-        */
         Answer ans = Answer.builder().status(Boolean.TRUE).descr("Not implemented").build();
+
+        CheckPersonaRequest request = new CheckPersonaRequest();
+        request.setRnokpp(rnokpp);
+        //request.
+        CheckPersonaResponse response = (CheckPersonaResponse) SendAndReceive(request,"checkPersona");
+        AnswerXml ansxml = response.getAnswerXml();
+        ans.setStatus(ansxml.isStatus());
+        ans.setDescr(ansxml.getDescr());
+        ans.setResult(ansxml.getResult());
+
         return ans;
         
     }

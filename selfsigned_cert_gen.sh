@@ -73,7 +73,7 @@ echo "**************************************************************************
 if [ -f ./$keystore ]; then
 	echo "сховище ключей сервіса вже існує"
 else 
-	openssl pkcs12 -export -in $clientpem -out $keystore -name server -inkey $clientkey
+	openssl pkcs12 -export -in $clientpem -out $keystore -name server -nodes -inkey $clientkey
 fi
 
 

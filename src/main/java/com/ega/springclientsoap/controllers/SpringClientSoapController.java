@@ -136,6 +136,19 @@ public class SpringClientSoapController {
             
             return ans;
         }
+
+        @PostMapping("/check")
+	public Answer checkPersona(@RequestBody String data) {
+            JSONObject js = new JSONObject(data);
+            Answer ans;
+            System.out.println("===============================CHECK PERSONA==============================================");
+            System.out.println(data);
+            System.out.println(js.toString());
+            ans = (Answer) service.checkPersona(js.getString("rnokpp"));
+            System.out.println(ans.toString());
+            
+            return ans;
+        }
         
 	@GetMapping("/notify")
 	public ResponseEntity<Void> notification() throws Exception {

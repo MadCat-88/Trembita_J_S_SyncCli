@@ -1,4 +1,4 @@
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://spring.io/guides/gs-producing-web-service" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://spring.io/guides/gs/producing-web-service" targetNamespace="http://spring.io/guides/gs/producing-web-service">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://spring.io/guides/gs-producing-web-service" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://spring.io/guides/gs/producing-web-service" targetNamespace="http://spring.io/guides/gs/producing-web-service">
   <wsdl:types>
     <xs:schema xmlns:tns="http://spring.io/guides/gs-producing-web-service" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://spring.io/guides/gs-producing-web-service">
 
@@ -18,6 +18,13 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+  <xs:element name="getPersonaListByFirstNameResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" name="personaXml" type="tns:personaXml"/>
+			</xs:sequence>
+		</xs:complexType>
+    </xs:element>
 
     <xs:element name="getPersonaListByLastNameRequest">
         <xs:complexType>
@@ -27,12 +34,27 @@
         </xs:complexType>
     </xs:element>
 
+<xs:element name="getPersonaListByLastNameResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" name="personaXml" type="tns:personaXml"/>
+			</xs:sequence>
+		</xs:complexType>
+    </xs:element>
+
     <xs:element name="getPersonaListByBirthDateRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="birthDate" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
+    </xs:element>
+    <xs:element name="getPersonaListByBirthDateResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" name="personaXml" type="tns:personaXml"/>
+			</xs:sequence>
+		</xs:complexType>
     </xs:element>
 
     <xs:element name="getPersonaListByPasportRequest">
@@ -42,6 +64,14 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+    <xs:element name="getPersonaListByPasportResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" name="personaXml" type="tns:personaXml"/>
+			</xs:sequence>
+		</xs:complexType>
+    </xs:element>
+
 
     <xs:element name="getPersonaListByUnzrRequest">
         <xs:complexType>
@@ -49,6 +79,13 @@
                 <xs:element name="unzr" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
+    </xs:element>
+    <xs:element name="getPersonaListByUnzrResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" name="personaXml" type="tns:personaXml"/>
+			</xs:sequence>
+		</xs:complexType>
     </xs:element>
 
 
@@ -136,6 +173,21 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="checkPersonaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="rnokpp" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="checkPersonaResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="answerXml" type="tns:answerXml"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
     <xs:complexType name="answerXml">
         <xs:sequence>
@@ -184,8 +236,16 @@
     <wsdl:part element="sch:getPersonaListByFirstNameRequest" name="getPersonaListByFirstNameRequest">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="getPersonaListByPasportResponse">
+    <wsdl:part element="sch:getPersonaListByPasportResponse" name="getPersonaListByPasportResponse">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="getPersonaListByPasportRequest">
     <wsdl:part element="sch:getPersonaListByPasportRequest" name="getPersonaListByPasportRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPersonaListByFirstNameResponse">
+    <wsdl:part element="sch:getPersonaListByFirstNameResponse" name="getPersonaListByFirstNameResponse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="getPersonaResponse">
@@ -196,12 +256,32 @@
     <wsdl:part element="sch:getPersonaListRequest" name="getPersonaListRequest">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="checkPersonaResponse">
+    <wsdl:part element="sch:checkPersonaResponse" name="checkPersonaResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="checkPersonaRequest">
+    <wsdl:part element="sch:checkPersonaRequest" name="checkPersonaRequest">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="deletePersonaRequest">
     <wsdl:part element="sch:deletePersonaRequest" name="deletePersonaRequest">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="getPersonaListByUnzrResponse">
+    <wsdl:part element="sch:getPersonaListByUnzrResponse" name="getPersonaListByUnzrResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPersonaListByLastNameResponse">
+    <wsdl:part element="sch:getPersonaListByLastNameResponse" name="getPersonaListByLastNameResponse">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="getPersonaListResponse">
     <wsdl:part element="sch:getPersonaListResponse" name="getPersonaListResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPersonaListByBirthDateResponse">
+    <wsdl:part element="sch:getPersonaListByBirthDateResponse" name="getPersonaListByBirthDateResponse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="deletePersonaResponse">
@@ -234,22 +314,32 @@
     <wsdl:operation name="getPersonaListByBirthDate">
       <wsdl:input message="tns:getPersonaListByBirthDateRequest" name="getPersonaListByBirthDateRequest">
     </wsdl:input>
+      <wsdl:output message="tns:getPersonaListByBirthDateResponse" name="getPersonaListByBirthDateResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersonaListByUnzr">
       <wsdl:input message="tns:getPersonaListByUnzrRequest" name="getPersonaListByUnzrRequest">
     </wsdl:input>
+      <wsdl:output message="tns:getPersonaListByUnzrResponse" name="getPersonaListByUnzrResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersonaListByLastName">
       <wsdl:input message="tns:getPersonaListByLastNameRequest" name="getPersonaListByLastNameRequest">
     </wsdl:input>
+      <wsdl:output message="tns:getPersonaListByLastNameResponse" name="getPersonaListByLastNameResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersonaListByFirstName">
       <wsdl:input message="tns:getPersonaListByFirstNameRequest" name="getPersonaListByFirstNameRequest">
     </wsdl:input>
+      <wsdl:output message="tns:getPersonaListByFirstNameResponse" name="getPersonaListByFirstNameResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersonaListByPasport">
       <wsdl:input message="tns:getPersonaListByPasportRequest" name="getPersonaListByPasportRequest">
     </wsdl:input>
+      <wsdl:output message="tns:getPersonaListByPasportResponse" name="getPersonaListByPasportResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersona">
       <wsdl:input message="tns:getPersonaRequest" name="getPersonaRequest">
@@ -261,6 +351,12 @@
       <wsdl:input message="tns:getPersonaListRequest" name="getPersonaListRequest">
     </wsdl:input>
       <wsdl:output message="tns:getPersonaListResponse" name="getPersonaListResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="checkPersona">
+      <wsdl:input message="tns:checkPersonaRequest" name="checkPersonaRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:checkPersonaResponse" name="checkPersonaResponse">
     </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="deletePersona">
@@ -292,30 +388,45 @@
       <wsdl:input name="getPersonaListByBirthDateRequest">
         <soap:body use="literal"/>
       </wsdl:input>
+      <wsdl:output name="getPersonaListByBirthDateResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersonaListByUnzr">
       <soap:operation soapAction=""/>
       <wsdl:input name="getPersonaListByUnzrRequest">
         <soap:body use="literal"/>
       </wsdl:input>
+      <wsdl:output name="getPersonaListByUnzrResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersonaListByLastName">
       <soap:operation soapAction=""/>
       <wsdl:input name="getPersonaListByLastNameRequest">
         <soap:body use="literal"/>
       </wsdl:input>
+      <wsdl:output name="getPersonaListByLastNameResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersonaListByFirstName">
       <soap:operation soapAction=""/>
       <wsdl:input name="getPersonaListByFirstNameRequest">
         <soap:body use="literal"/>
       </wsdl:input>
+      <wsdl:output name="getPersonaListByFirstNameResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersonaListByPasport">
       <soap:operation soapAction=""/>
       <wsdl:input name="getPersonaListByPasportRequest">
         <soap:body use="literal"/>
       </wsdl:input>
+      <wsdl:output name="getPersonaListByPasportResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getPersona">
       <soap:operation soapAction=""/>
@@ -332,6 +443,15 @@
         <soap:body use="literal"/>
       </wsdl:input>
       <wsdl:output name="getPersonaListResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="checkPersona">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="checkPersonaRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="checkPersonaResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
