@@ -11,7 +11,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -24,19 +23,8 @@ import org.springframework.stereotype.Component;
 public class LogRecordService implements LogRecordInterface{
     //ініціалізація файлу налаштувань
     
-    //@Value("${webclient.settings.logfilename:client.log}")
-    //повний шлях до файлу лога
-    //private String logFileName;
-
-    //@Value("${webclient.settings.loglevel:0}") 
-    //рівень логування.
-    //private int logLevel;
-
-    
-    
     @Override
     public Boolean addRecord(LogRecord record) {
-    //    System.out.println("logFileName = "+logFileName+"\nLogLevel = "+logLevel);
         
         switch(AppSettings.LOG_LEVEL){
             case "0" -> AddRecordLevel0(record); //немає логування

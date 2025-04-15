@@ -28,7 +28,7 @@ import org.json.JSONObject;
 //Задає назву таблиці. Якщо ця анотація не задана, то назва таблиці буде дублювати назву класу.
 //@Table(name="Persona")
 public class Persona implements Serializable{
-    //Ця анотація зазначає, що наступне поле класу буде виконувати роль ідентіфікатора в БД    
+//Ця анотація зазначає, що наступне поле класу буде виконувати роль ідентіфікатора в БД    
 //    @Id
     //Говорить, що ідентіфікатор наступного поля класу буде генеруватись автоматично
 //    @GeneratedValue
@@ -76,7 +76,6 @@ public class Persona implements Serializable{
     //метод, який перетворює об'єкт класу користувача на JSON об'єкт
     public JSONObject toJSON(){
         JSONObject jsData=new JSONObject();
-        //Persona persona = result.get(i);
         jsData.put("id",getId());
         jsData.put("firstName",getFirstName());
         jsData.put("lastName",getLastName());
