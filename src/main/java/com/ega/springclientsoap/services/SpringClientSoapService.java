@@ -800,11 +800,6 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
     public Boolean isRunningInsideDocker() {
 
         return AppSettings.IS_DOCKER;
-    //    String isDocker = System.getenv("IS_DOCKER");
-    //    System.out.println("isDocker>"+isDocker+"<");
-    //    if(isDocker == null){
-    //        return false;
-    //    }else return true;
     }    
 }
 
