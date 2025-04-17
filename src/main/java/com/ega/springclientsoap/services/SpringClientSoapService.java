@@ -49,6 +49,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -737,10 +739,18 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
     public String listAsic() {
         List<String> queries = readLogQueries();
         boolean wasSuccess = false;
+        
+        System.out.println("In a container: "+isRunningInsideDocker());
+        //якщо клієнт працює в докер, то цю функціональність вимикаєм.
+        if(isRunningInsideDocker()){
+            String html = render_template_files("","list_files.html");
+            html = html.replaceAll("<!--ONERROR-->", GetErrorBlock("Завантаженя ASIC контейнерів не передбачено коли программа працює в Docker!"));
+            return html;
+        }
+        
         for(int i=0; i<queries.size();i++){
             String parametres = queries.get(i);
             boolean isSuccess = getASIC(parametres);
-            //System.out.println("p="+parametres);
             if (isSuccess){
                 wasSuccess = true;
             }
@@ -786,5 +796,15 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         
         return queries;
     }
+    
+    public Boolean isRunningInsideDocker() {
+
+        return AppSettings.IS_DOCKER;
+    //    String isDocker = System.getenv("IS_DOCKER");
+    //    System.out.println("isDocker>"+isDocker+"<");
+    //    if(isDocker == null){
+    //        return false;
+    //    }else return true;
+    }    
 }
 

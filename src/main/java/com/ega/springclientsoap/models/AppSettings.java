@@ -67,7 +67,11 @@ public class AppSettings implements InitializingBean{
     public static Map<String,String> SERVICE_HEADERS;
     public static Map<String,String> CLIENT_HEADERS;
     public static Map<String,String> HEADERS;
+
+    public static boolean IS_DOCKER;
     
+    @Value("${webclient.settings.isdocker}")
+    private boolean is_docker;
 
     @Override
     public void afterPropertiesSet() {
@@ -82,7 +86,7 @@ public class AppSettings implements InitializingBean{
         AppSettings.HEADERS = headers;
         AppSettings.SERVICE_HEADERS = service_headers;
         AppSettings.CLIENT_HEADERS = client_headers;
-        
+        AppSettings.IS_DOCKER = is_docker;
         
         System.out.println("afterPropertiesSet: Bean is initialized = "+SERVER_PATH);
 
