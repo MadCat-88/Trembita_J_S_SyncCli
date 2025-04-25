@@ -68,7 +68,6 @@ public class SpringClientSoapController {
         //перехід до сторинкі створення персони
 	public String viewFiles() throws FileNotFoundException{
             System.out.println("ASIC's containers page!");
-            //return render_template("list_files.html");
             return service.listAsic();
 	}
         
@@ -93,7 +92,6 @@ public class SpringClientSoapController {
             String res = null;
             
             switch(searchKey){
-                //case "rnokpp" -> res = service.getHtml("/find/"+searchValue);    
                 case "rnokpp" -> res = (String) service.findByRnokpp(searchValue);    
                 case "firstName" -> res = (String) service.findByFirstName(searchValue);    
                 case "lastName" -> res = (String) service.findByLastName(searchValue);    

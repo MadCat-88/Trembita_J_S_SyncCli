@@ -12,7 +12,6 @@ import com.ega.springclientsoap.models.Persona;
  * @author sa
  */
 public interface SpringClientSoapInterface {
-//   public String getHtml(String param);
    public String showAll();
    public String findByRnokpp(String rnokpp);
    public String findByFirstName(String firstName);

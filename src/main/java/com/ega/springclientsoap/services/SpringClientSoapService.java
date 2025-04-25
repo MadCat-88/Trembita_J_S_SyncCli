@@ -49,6 +49,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -127,41 +129,14 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
             response = webServiceTemplate.web.marshalSendAndReceive(AppSettings.SERVER_PATH,request, new WebServiceMessageCallback() {
                 @Override
                 public void doWithMessage(WebServiceMessage message) {
-                    try
+                try
                     {
-    /*          Додаємо заголовки для Трембіта 1.х 
-            Заголовки повинни виглядяти наступним чином     
-                                        
-                    <soapenv:Header>
-                      <xro:client iden:objectType="SUBSYSTEM">
-                         <iden:xRoadInstance>SEVDEIR-TEST</iden:xRoadInstance>
-                         <iden:memberClass>GOV</iden:memberClass>
-                         <iden:memberCode>11110014</iden:memberCode>
-                         <!--Optional:-->
-                         <iden:subsystemCode>SUB_prod</iden:subsystemCode>
-                      </xro:client>
-                      <xro:service iden:objectType="SERVICE">
-                         <iden:xRoadInstance>SEVDEIR-TEST</iden:xRoadInstance>
-                         <iden:memberClass>GOV</iden:memberClass>
-                         <iden:memberCode>11110015</iden:memberCode>
-                         <!--Optional:-->
-                         <iden:subsystemCode>88_Test_prod</iden:subsystemCode>
-                         <iden:serviceCode>COUNTRY</iden:serviceCode>
-                         <!--Optional:-->
-                         <iden:serviceVersion>1</iden:serviceVersion>
-                      </xro:service>
-                      <xro:id>2346222</xro:id>
-                      <xro:protocolVersion>4.0</xro:protocolVersion>
-                   </soapenv:Header>
-*/           
-                    
-                    
-                    SOAPMessage soapMessage = ((SaajSoapMessage)message).getSaajMessage();
-                    SOAPHeader header = soapMessage.getSOAPHeader();
-                    QName qname = new QName("http://x-road.eu/xsd/xroad.xsd","client","xro");
-                    SOAPHeaderElement client = header.addHeaderElement(qname);
-                    QName iden = new QName("http://x-road.eu/xsd/identifiers","objectType","iden");
-                    client.addAttribute(iden, "SUBSYSTEM");
+                        SOAPMessage soapMessage = ((SaajSoapMessage)message).getSaajMessage();
+                        SOAPHeader header = soapMessage.getSOAPHeader();
+                        QName qname = new QName("http://x-road.eu/xsd/xroad.xsd","client","xro");
+                        SOAPHeaderElement client = header.addHeaderElement(qname);
+                        QName iden = new QName("http://x-road.eu/xsd/identifiers","objectType","iden");
+                        client.addAttribute(iden, "SUBSYSTEM");
 
                     for (String key : AppSettings.CLIENT_HEADERS.keySet()) {
                         String value = AppSettings.CLIENT_HEADERS.get(key);
@@ -537,14 +512,6 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         //log.setHeaders((String)logrecord.getOrDefault("headers"));
 
         log.setBody((String)logrecord.getOrDefault("body",""));
-        /*
-        if(ans!=null){
-            log.setError(!ans.getStatus());
-            log.setResult(ans);
-            log.setDescr(ans.getDescr());
-            log.setBody("");
-        }
-        */
         
         logService.addRecord(log);
         
@@ -624,12 +591,11 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         headers.put("Content-Type", "application/octet-stream");
 
         try {
-            // Step 1: Load the certificate from PEM file or use JKS
-            // (If you used PKCS#12, uncomment the next block)
+            // Крок 1: Завантажуемо сертіфікат з PEM файла
             KeyStore ks = KeyStore.getInstance("PKCS12");
             ks.load(new FileInputStream(AppSettings.TRUSTSTORE_PATH), AppSettings.TRUSTSTORE_PASSWORD.toCharArray());
 
-            // Step 2: Create an SSL context with your certificate
+            // Крок 2: Створюємо SSL контекст с вашим сертіфікатом
             SSLContext sslContext = SSLContext.getInstance("TLS");
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             kmf.init(ks, AppSettings.TRUSTSTORE_PASSWORD.toCharArray());
@@ -644,11 +610,10 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
 
             sslContext.init(kmf.getKeyManagers(), trustAllCerts, new SecureRandom());
 
-            // Step 3: Configure the SSL socket factory
+            // Крок 3: Конфігуруємо SSL сокет фабрику
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-            // Create an URL connection using your custom SSL context
-            //URL url = new URL("https://192.168.99.92/signature?queryId=79881fc2-7a83-4e87-be43-b938760dc032&xRoadInstance=test1&memberClass=GOV&memberCode=00000088&subsystemCode=SUB_SERVICE");
+            // Створюємо URL з'єднення використовуючи ваш налаштований SSL контекст
             String hostname = AppSettings.SERVER_PATH.toUpperCase();
             if(!hostname.contains("HTTPS")){
                 hostname = hostname.replaceAll("HTTP://", "HTTPS://");
@@ -670,10 +635,9 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
             
             // Connect
             int responseCode = connection.getResponseCode();
-            //System.out.println("Response Code: " + responseCode);
 
             
-            // Check if the request was successful
+            // Перевіряємо що з'єднання було успішним
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 SaveAttachedFile(connection);
                 
@@ -709,14 +673,14 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         BufferedInputStream inputStream = null;
         String result = "";
         try {
-            // Get the input stream from the connection
+            // Отримуємо вхідний стрім з подключення
             inputStream = new BufferedInputStream(connection.getInputStream());
             String filename = connection.getHeaderField("Content-Disposition").replaceAll("filename=", "").replaceAll("\"", "");
             if(filename.isEmpty()){
                 LocalDateTime dt = LocalDateTime.now();
                 filename = ""+dt.getYear()+dt.getMonth()+dt.getDayOfMonth()+dt.getHour()+dt.getMinute()+dt.getSecond()+dt.getNano()+".zip";
             }   String outputFilePath = AppSettings.ASIC_PATH+"/"+filename;
-            // Create output file
+            // Створюємо вихідний файл
             FileOutputStream fileOutputStream = new FileOutputStream(outputFilePath);
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
             // Read bytes and write to file
@@ -775,10 +739,18 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
     public String listAsic() {
         List<String> queries = readLogQueries();
         boolean wasSuccess = false;
+        
+        System.out.println("In a container: "+isRunningInsideDocker());
+        //якщо клієнт працює в докер, то цю функціональність вимикаєм.
+        if(isRunningInsideDocker()){
+            String html = render_template_files("","list_files.html");
+            html = html.replaceAll("<!--ONERROR-->", GetErrorBlock("Завантаженя ASIC контейнерів не передбачено коли программа працює в Docker!"));
+            return html;
+        }
+        
         for(int i=0; i<queries.size();i++){
             String parametres = queries.get(i);
             boolean isSuccess = getASIC(parametres);
-            //System.out.println("p="+parametres);
             if (isSuccess){
                 wasSuccess = true;
             }
@@ -824,5 +796,10 @@ public class SpringClientSoapService implements SpringClientSoapInterface{
         
         return queries;
     }
+    
+    public Boolean isRunningInsideDocker() {
+
+        return AppSettings.IS_DOCKER;
+    }    
 }
 
